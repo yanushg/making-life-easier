@@ -1,0 +1,19 @@
+{
+  "entry": [
+    {
+      "changes": [
+        {
+          "value": {
+            "messages": [
+              {
+                "from": "972549406690",
+                "id": "wamid.TEST",
+                "text": { "body": "Hello from fixture" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
