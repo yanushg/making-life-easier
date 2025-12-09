@@ -4,6 +4,8 @@ from fastapi import APIRouter, Body, status, HTTPException
 from fastapi.responses import PlainTextResponse, JSONResponse
 
 from app.channels.whatsapp_client import send_whatsapp_message
+from app.channels.whatsapp_parser import extract_sender_and_text
+
 import logging
 import httpx
 
@@ -20,17 +22,16 @@ async def whatsapp_ping():
 async def whatsapp_webhook(payload: Dict[str, Any] = Body(...)):
     # 1. Extract sender + text
     try:
-        msg = payload["entry"][0]["changes"][0]["value"]["messages"][0]
-        from_number = msg["from"]
-        text_body = msg.get("text", {}).get("body", "")
-    except (KeyError, IndexError, TypeError):
-        raise HTTPException(status_code=400, detail="Invalid WhatsApp payload structure")
+        sender, parsed_msg = extract_sender_and_text(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    text_body = parsed_msg.get("text", "")
+    reply_text = text_body
 
-    # 2. Try to send WhatsApp message
+    # 2. Send WhatsApp message (still echo for now)
     try:
-        await send_whatsapp_message(to=from_number, text=text_body)
+        await send_whatsapp_message(to=sender, text=reply_text)
     except httpx.HTTPStatusError as e:
-        # This is the REAL error from WhatsApp
         status_code = e.response.status_code
         try:
             error_body = e.response.json()
@@ -45,5 +46,10 @@ async def whatsapp_webhook(payload: Dict[str, Any] = Body(...)):
     # 3. Success
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
-        content={"status": "created"},
+        content={
+            "status": "created",
+            "sender": sender,
+            "message": parsed_msg,
+            "reply_text": reply_text,
+        },
     )
