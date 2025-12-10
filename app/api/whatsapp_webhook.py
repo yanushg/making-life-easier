@@ -5,6 +5,8 @@ from fastapi.responses import PlainTextResponse, JSONResponse
 
 from app.channels.whatsapp_client import send_whatsapp_message
 from app.channels.whatsapp_parser import extract_sender_and_text
+from app.conversation.service import build_reply
+
 
 import logging
 import httpx
@@ -25,8 +27,9 @@ async def whatsapp_webhook(payload: Dict[str, Any] = Body(...)):
         sender, parsed_msg = extract_sender_and_text(payload)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
-    text_body = parsed_msg.get("text", "")
-    reply_text = text_body
+    #text_body = parsed_msg.get("text", "")
+    reply = build_reply(parsed_msg)
+    reply_text = reply["text"]
 
     # 2. Send WhatsApp message (still echo for now)
     try:
