@@ -4,10 +4,9 @@ from app.core import config
 
 from typing import Optional
 
+
 async def send_whatsapp_message(
-    to: str,
-    text: str,
-    client: Optional[httpx.AsyncClient] = None
+    to: str, text: str, client: Optional[httpx.AsyncClient] = None
 ) -> None:
     url = f"https://graph.facebook.com/v19.0/{config.WHATSAPP_PHONE_NUMBER_ID}/messages"
 

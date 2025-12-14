@@ -3,11 +3,7 @@ from app.conversation.service import build_reply
 
 def test_reply_engine_echoes_text():
     # Minimal input
-    parsed = {
-        "type": "text",
-        "text": "Hello bot!",
-        "raw": {}
-    }
+    parsed = {"type": "text", "text": "Hello bot!", "raw": {}}
 
     reply = build_reply(parsed)
 

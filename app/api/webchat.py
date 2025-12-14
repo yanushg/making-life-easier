@@ -3,9 +3,11 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
+
 class WebchatMessage(BaseModel):
     user_id: str
     message: str
+
 
 @router.post("/message", status_code=status.HTTP_201_CREATED)
 async def webchat_message(msg: WebchatMessage):

@@ -20,14 +20,14 @@ async def whatsapp_ping():
     return "whatsapp webhook is up"
 
 
-@router.post("/",status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def whatsapp_webhook(payload: Dict[str, Any] = Body(...)):
     # 1. Extract sender + text
     try:
         sender, parsed_msg = extract_sender_and_text(payload)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
-    #text_body = parsed_msg.get("text", "")
+    # text_body = parsed_msg.get("text", "")
     reply = build_reply(parsed_msg)
     reply_text = reply["text"]
 

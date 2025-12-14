@@ -12,17 +12,11 @@ def build_reply(parsed_message: dict) -> dict:
 
     # 1. Unsupported message type
     if msg_type != "text":
-        return {
-            "text": "I can only read text messages right now."
-        }
+        return {"text": "I can only read text messages right now."}
 
     # 2. Empty text
     if not text.strip():
-        return {
-            "text": "I didn't receive any text. Can you try again?"
-        }
+        return {"text": "I didn't receive any text. Can you try again?"}
 
     # 3. Default = echo
-    return {
-        "text": text
-    }
+    return {"text": text}
